@@ -205,4 +205,11 @@ class AdminController extends Controller
             'data' => $distributor
         ]);
     }
+    public function penjab()
+    {
+        $penjab = DB::table('penjab')->get();
+        return response()->json([
+            'data' => $penjab
+        ]);
+    }
 }

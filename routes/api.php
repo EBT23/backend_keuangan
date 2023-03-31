@@ -39,4 +39,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/delete_distributor/{id}', [AdminController::class, 'delete_distributor']);
     Route::get('/get_distributor_by_id/{id}', [AdminController::class, 'get_distributor_by_id']);
 
+    Route::get('/penjab', [AdminController::class, 'penjab']);
 });
