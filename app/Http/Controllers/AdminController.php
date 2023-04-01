@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Distributor;
 use App\Models\Pemasukan;
 use App\Models\Pengeluaran;
+use App\Models\Penjab;
+use App\Models\Posisi;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
@@ -205,11 +208,209 @@ class AdminController extends Controller
             'data' => $distributor
         ]);
     }
+
+    //========== PENJAB ===========
+
     public function penjab()
     {
         $penjab = DB::table('penjab')->get();
         return response()->json([
             'data' => $penjab
+        ]);
+    }
+
+    public function tambah_penjab(Request $request)
+    {
+        $validate = $request->validate([
+            'nama_penjab'=> 'required',
+        ]);
+
+        $penjab = DB::table('penjab')->insert([
+
+            'nama_penjab' => $request->nama_penjab,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Penjab berhasil ditambah',
+            'data' => $penjab
+        ], Response::HTTP_OK);
+    }
+
+    public function update_penjab(Request $request, $id)
+    {
+        $penjab = Penjab::findOrFail($id);
+        $penjab->update($request->all());
+        return response()->json([
+            'success' => true,
+            'message' => 'penjab berhasil diubah',
+            'data' => $penjab
+        ]);
+    }
+
+    public function delete_penjab($id)
+    {
+        $penjab = Penjab::findOrFail($id);
+        $penjab->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Penjab berhasil dihapus',
+            'data' => $penjab
+        ]);
+
+    }
+
+    public function get_penjabId($id)
+    {
+        $penjab = DB::table('penjab')
+        ->where('id', '=', $id)
+        ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil ditampilkan',
+            'data' => $penjab
+        ]);
+
+    }
+
+    //========== POSISI ===========
+
+    public function posisi()
+    {
+        $posisi = DB::table('posisi')->get();
+        return response()->json([
+            'data' => $posisi
+        ]);
+    }
+
+    public function tambah_posisi(Request $request)
+    {
+        $validate = $request->validate([
+            'nama_posisi'=> 'required',
+        ]);
+
+        $posisi = DB::table('posisi')->insert([
+
+            'nama_posisi' => $request->nama_posisi,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Posisi berhasil ditambah',
+            'data' => $posisi
+        ], Response::HTTP_OK);
+    }
+
+    public function update_posisi(Request $request, $id)
+    {
+        $posisi = Posisi::findOrFail($id);
+        $posisi->update($request->all());
+        return response()->json([
+            'success' => true,
+            'message' => 'posisi berhasil diubah',
+            'data' => $posisi
+        ]);
+    }
+
+    public function delete_posisi($id)
+    {
+        $posisi = Posisi::findOrFail($id);
+        $posisi->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'posisi berhasil dihapus',
+            'data' => $posisi
+        ]);
+    }
+
+    public function get_posisiId($id)
+    {
+        $posisi = DB::table('posisi')
+                ->where('id', '=', $id)
+                ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil ditampilkan',
+            'data' => $posisi
+        ]);
+    }
+
+    //========== PENGGAJIAN ===========
+
+    public function penggajian()
+    {
+        $penggajian = DB::table('penggajian')
+        ->join('users', 'users.id', '=', 'penggajian.user_id')
+        ->select('penggajian.id','penggajian.bulan', 'penggajian.hari_kerja', 'penggajian.gapok', 'penggajian.makan_transport','penggajian.lembur',
+        'penggajian.tunjangan_jabatan','penggajian.insentif','penggajian.pinjaman_karyawan','penggajian.jamkes','users.name','penggajian.total')
+        ->get();
+        return response()->json([
+            'data' => $penggajian
+        ]);
+    }
+
+    //========== ROLE ===========
+
+    public function role()
+    {
+        $role = DB::table('role')->get();
+        return response()->json([
+            'data' => $role
+        ]);
+    }
+
+    public function tambah_role(Request $request)
+    {
+        $validate = $request->validate([
+            'role'=> 'required',
+        ]);
+
+        $role = DB::table('role')->insert([
+
+            'role'=> $request->role,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Role berhasil disimpan',
+            'data' => $role
+        ], Response::HTTP_OK);
+    }
+
+    public function update_role(Request $request, $id)
+    {
+        $role = Role::findOrFail($id);
+        $role->update($request->all());
+        return response()->json([
+            'success' => true,
+            'message' => 'Role berhasil diubah',
+            'data' => $role
+        ]);
+    }
+
+    public function delete_role($id)
+    {
+        $role = Role::findOrFail($id);
+        $role->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Role berhasil dihapus',
+            'data' => $role
+        ]);
+    }
+
+    public function get_roleId($id)
+    {
+        $role = DB::table('role')
+        ->where('id', '=', $id)
+        ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil ditampilkan',
+            'data' => $role
         ]);
     }
 }

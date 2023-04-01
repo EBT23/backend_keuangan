@@ -38,6 +38,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/update_distributor/{id}', [AdminController::class, 'update_distributor']);
     Route::delete('/delete_distributor/{id}', [AdminController::class, 'delete_distributor']);
     Route::get('/get_distributor_by_id/{id}', [AdminController::class, 'get_distributor_by_id']);
-
+    
     Route::get('/penjab', [AdminController::class, 'penjab']);
+    Route::post('/tambah_penjab', [AdminController::class, 'tambah_penjab']);
+    Route::put('/update_penjab/{id}', [AdminController::class, 'update_penjab']);
+    Route::delete('/delete_penjab/{id}', [AdminController::class, 'delete_penjab']);
+    Route::get('/get_penjab_by_id/{id}', [AdminController::class, 'get_penjabId']);
+    
+    Route::get('/posisi', [AdminController::class, 'posisi']);
+    Route::post('/tambah_posisi', [AdminController::class, 'tambah_posisi']);
+    Route::put('/update_posisi/{id}', [AdminController::class, 'update_posisi']);
+    Route::delete('/delete_posisi/{id}', [AdminController::class, 'delete_posisi']);
+    Route::get('/get_posisi_by_id/{id}', [AdminController::class, 'get_posisiId']);
+    
+    Route::get('/penggajian', [AdminController::class, 'penggajian']);
+    
+    Route::get('/role', [AdminController::class, 'role']);
+    Route::post('/tambah_role', [AdminController::class, 'tambah_role']);
+    Route::put('/update_role/{id}', [AdminController::class, 'update_role']);
+    Route::delete('/delete_role/{id}', [AdminController::class, 'delete_role']);
+    Route::get('/get_role_by_id/{id}', [AdminController::class, 'get_roleId']);
 });
