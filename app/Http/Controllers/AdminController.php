@@ -1,44 +1,51 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\api;
 
-use App\Models\Distributor;
-use App\Models\Pemasukan;
-use App\Models\Pengeluaran;
+use App\Models\Role;
 use App\Models\Penjab;
 use App\Models\Posisi;
-use App\Models\Role;
+use App\Models\Pemasukan;
+use App\Models\Distributor;
+use App\Models\Pengeluaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Models\User;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminController extends Controller
+class ApiAdminController extends Controller
 {
+
     public function dashboard()
     {
-        
     }
     public function pengeluaran()
     {
-        $pengeluaran = DB::table('pengeluaran')->get();
+        $pengeluaran = DB::table('pengeluaran')
+            ->join('distributor', 'distributor.id', '=', 'pengeluaran.distributor_id')
+            ->select('distributor.id', 'distributor.nama_distributor', 'pengeluaran.keterangan', 'pengeluaran.tgl', 'pengeluaran.total_pengeluaran', 'pengeluaran.bukti_pengeluaran')
+            ->get();
         return response()->json([
-            'data' =>$pengeluaran
+            'data' => $pengeluaran
         ]);
     }
     public function tambah_pengeluaran(Request $request)
     {
         $validate = $request->validate([
-            'jenis_pengeluaran'=> 'required',
-            'keterangan'=> 'required',
+            'distributor_id' => 'required',
+            'keterangan' => 'required',
             'total_pengeluaran' => 'required',
             'tgl' => 'required',
+            'bukti_pengeluaran' => 'required',
         ]);
 
         $pengeluaran = DB::table('pengeluaran')->insert([
-            'jenis_pengeluaran'=> $request->jenis_pengeluaran,
-            'keterangan'=> $request->keterangan,
+            'distributor_id' => $request->distributor_id,
+            'keterangan' => $request->keterangan,
             'total_pengeluaran' => $request->total_pengeluaran,
             'tgl' => $request->tgl,
+            'bukti_pengeluaran' => $request->bukti_pengeluaran,
         ]);
 
         return response()->json([
@@ -70,8 +77,8 @@ class AdminController extends Controller
     public function get_pengeluaran_by_id($id)
     {
         $pengeluaran = DB::table('pengeluaran')
-                ->where('id', '=', $id)
-                ->get();
+            ->where('id', '=', $id)
+            ->get();
 
         return response()->json([
             'success' => true,
@@ -81,25 +88,30 @@ class AdminController extends Controller
     }
     public function pemasukan()
     {
-        $pengeluaran = DB::table('pemasukan')->get();
+        $pemasukan = DB::table('pemasukan')
+            ->join('distributor', 'distributor.id', '=', 'pemasukan.distributor_id')
+            ->select('distributor.id', 'distributor.nama_distributor', 'pemasukan.keterangan', 'pemasukan.tgl', 'pemasukan.total_pemasukan', 'pemasukan.bukti_pemasukan')
+            ->get();
         return response()->json([
-            'data' =>$pengeluaran
+            'data' => $pemasukan
         ]);
     }
     public function tambah_pemasukan(Request $request)
     {
         $validate = $request->validate([
-            'jenis_pemasukan'=> 'required',
-            'keterangan'=> 'required',
+            'distributor_id' => 'required',
+            'keterangan' => 'required',
             'total_pemasukan' => 'required',
             'tgl' => 'required',
+            'bukti_pemasukan' => 'required',
         ]);
 
         $pemasukan = DB::table('pemasukan')->insert([
-            'jenis_pemasukan'=> $request->jenis_pemasukan,
-            'keterangan'=> $request->keterangan,
+            'distributor_id' => $request->distributor_id,
+            'keterangan' => $request->keterangan,
             'total_pemasukan' => $request->total_pemasukan,
             'tgl' => $request->tgl,
+            'bukti_pemasukan' => $request->bukti_pemasukan,
         ]);
 
         return response()->json([
@@ -131,8 +143,8 @@ class AdminController extends Controller
     public function get_pemasukan_by_id($id)
     {
         $pemasukan = DB::table('pemasukan')
-                ->where('id', '=', $id)
-                ->get();
+            ->where('id', '=', $id)
+            ->get();
 
         return response()->json([
             'success' => true,
@@ -142,11 +154,11 @@ class AdminController extends Controller
     }
     public function distributor()
     {
-        
+
         $distributor = DB::table('distributor')
-        ->join('penjab', 'penjab.id', '=', 'distributor.penjab_id')
-        ->select('distributor.id','distributor.nama_distributor', 'penjab.nama_penjab', 'distributor.tlp', 'distributor.area_cover','distributor.alamat')
-        ->get();
+            ->join('penjab', 'penjab.id', '=', 'distributor.penjab_id')
+            ->select('distributor.id', 'distributor.nama_distributor', 'penjab.nama_penjab', 'distributor.tlp', 'distributor.area_cover', 'distributor.alamat')
+            ->get();
         return response()->json([
             'data' => $distributor
         ]);
@@ -154,8 +166,8 @@ class AdminController extends Controller
     public function tambah_distributor(Request $request)
     {
         $validate = $request->validate([
-            'nama_distributor'=> 'required',
-            'tlp'=> 'required',
+            'nama_distributor' => 'required',
+            'tlp' => 'required',
             'area_cover' => 'required',
             'alamat' => 'required',
             'penjab_id' => 'required',
@@ -163,8 +175,8 @@ class AdminController extends Controller
 
         $distributor = DB::table('distributor')->insert([
 
-            'nama_distributor'=> $request->nama_distributor,
-            'tlp'=> $request->tlp,
+            'nama_distributor' => $request->nama_distributor,
+            'tlp' => $request->tlp,
             'area_cover' => $request->area_cover,
             'alamat' => $request->alamat,
             'penjab_id' => $request->penjab_id,
@@ -199,8 +211,8 @@ class AdminController extends Controller
     public function get_distributor_by_id($id)
     {
         $distributor = DB::table('distributor')
-                ->where('id', '=', $id)
-                ->get();
+            ->where('id', '=', $id)
+            ->get();
 
         return response()->json([
             'success' => true,
@@ -222,7 +234,7 @@ class AdminController extends Controller
     public function tambah_penjab(Request $request)
     {
         $validate = $request->validate([
-            'nama_penjab'=> 'required',
+            'nama_penjab' => 'required',
         ]);
 
         $penjab = DB::table('penjab')->insert([
@@ -257,21 +269,19 @@ class AdminController extends Controller
             'message' => 'Penjab berhasil dihapus',
             'data' => $penjab
         ]);
-
     }
 
     public function get_penjabId($id)
     {
         $penjab = DB::table('penjab')
-        ->where('id', '=', $id)
-        ->get();
+            ->where('id', '=', $id)
+            ->get();
 
         return response()->json([
             'success' => true,
             'message' => 'Data berhasil ditampilkan',
             'data' => $penjab
         ]);
-
     }
 
     //========== POSISI ===========
@@ -287,12 +297,13 @@ class AdminController extends Controller
     public function tambah_posisi(Request $request)
     {
         $validate = $request->validate([
-            'nama_posisi'=> 'required',
+            'nama_posisi' => 'required',
         ]);
 
         $posisi = DB::table('posisi')->insert([
 
             'nama_posisi' => $request->nama_posisi,
+            'updated_at' => now(),
         ]);
 
         return response()->json([
@@ -327,8 +338,8 @@ class AdminController extends Controller
     public function get_posisiId($id)
     {
         $posisi = DB::table('posisi')
-                ->where('id', '=', $id)
-                ->get();
+            ->where('id', '=', $id)
+            ->get();
 
         return response()->json([
             'success' => true,
@@ -342,10 +353,22 @@ class AdminController extends Controller
     public function penggajian()
     {
         $penggajian = DB::table('penggajian')
-        ->join('users', 'users.id', '=', 'penggajian.user_id')
-        ->select('penggajian.id','penggajian.bulan', 'penggajian.hari_kerja', 'penggajian.gapok', 'penggajian.makan_transport','penggajian.lembur',
-        'penggajian.tunjangan_jabatan','penggajian.insentif','penggajian.pinjaman_karyawan','penggajian.jamkes','users.name','penggajian.total')
-        ->get();
+            ->join('users', 'users.id', '=', 'penggajian.user_id')
+            ->select(
+                'penggajian.id',
+                'penggajian.bulan',
+                'penggajian.hari_kerja',
+                'penggajian.gapok',
+                'penggajian.makan_transport',
+                'penggajian.lembur',
+                'penggajian.tunjangan_jabatan',
+                'penggajian.insentif',
+                'penggajian.pinjaman_karyawan',
+                'penggajian.jamkes',
+                'users.name',
+                'penggajian.total'
+            )
+            ->get();
         return response()->json([
             'data' => $penggajian
         ]);
@@ -364,12 +387,12 @@ class AdminController extends Controller
     public function tambah_role(Request $request)
     {
         $validate = $request->validate([
-            'role'=> 'required',
+            'role' => 'required',
         ]);
 
         $role = DB::table('role')->insert([
 
-            'role'=> $request->role,
+            'role' => $request->role,
         ]);
 
         return response()->json([
@@ -404,8 +427,8 @@ class AdminController extends Controller
     public function get_roleId($id)
     {
         $role = DB::table('role')
-        ->where('id', '=', $id)
-        ->get();
+            ->where('id', '=', $id)
+            ->get();
 
         return response()->json([
             'success' => true,
@@ -413,4 +436,93 @@ class AdminController extends Controller
             'data' => $role
         ]);
     }
+
+    public function karyawan()
+    {
+        $data = DB::table('users')
+                ->join('role', 'role.id', '=', 'users.role_id')
+                ->join('posisi', 'posisi.id', '=', 'users.posisi_id')
+                ->select('users.name','users.email','users.tempat_lahir','users.tgl_lahir','users.no_identitas',
+                        'users.status','users.no_tlp','users.domisili','role.*','posisi.*')
+                ->where('role.id','=','2')
+                ->get();
+
+            return response()->json([
+                'data' => $data
+            ]);
+    }
+
+    public function tambah_karyawan(Request $request)
+    {
+        $validate = $request->validate([
+            'name'=> 'required',
+            'email'=> 'required|string|email|max:255|unique:users',
+            'no_identitas'=> 'required',
+            'tempat_lahir'=> 'required',
+            'tgl_lahir'=> 'required',
+            'no_rek'=> 'required',
+            'posisi_id'=> 'required',
+            'no_tlp'=> 'required',
+            ], [
+                'email.unique' => 'email sudah digunakan',
+        ]);
+
+        $karyawan = DB::table('users')->insert([
+
+            'name'=> $request->name,
+            'email'=> $request->email,
+            'password'=> bcrypt('12345678'),
+            'no_identitas'=> $request->no_identitas,
+            'tempat_lahir'=> $request->tempat_lahir,
+            'tgl_lahir'=> $request->tgl_lahir,
+            'no_rek'=> $request->no_rek,
+            'role_id'=> 2,
+            'posisi_id'=> $request->posisi_id,
+            'status'=> $request->status,
+            'domisili'=> $request->domisili,
+            'no_tlp'=> $request->no_tlp,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Karyawan berhasil ditambah',
+            'data' => $karyawan
+        ], Response::HTTP_OK);
+    }
+
+    public function update_karyawan(Request $request, $id)
+    {
+        $karyawan = User::findOrFail($id);
+        $karyawan->update($request->all());
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil diubah',
+            'data' => $karyawan
+        ]);
+    }
+
+    public function delete_karyawan($id)
+    {
+        $karyawan = User::findOrFail($id);
+        $karyawan->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil dihapus',
+            'data' => $karyawan
+        ]);
+    }
+
+    public function get_karyawan_id($id)
+    {
+        $karyawan = DB::table('users')
+        ->where('id', '=', $id)
+        ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil ditampilkan',
+            'data' => $karyawan
+        ]);
+    }
+    
 }

@@ -52,6 +52,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/get_posisi_by_id/{id}', [AdminController::class, 'get_posisiId']);
     
     Route::get('/penggajian', [AdminController::class, 'penggajian']);
+    Route::get('/karyawan', [AdminController::class, 'karyawan']);
+    Route::post('/tambah_karyawan', [AdminController::class, 'tambah_karyawan']);
+    Route::put('/update_karyawan/{id}', [AdminController::class, 'update_karyawan']);
+    Route::delete('/delete_karyawan/{id}', [AdminController::class, 'delete_karyawan']);
+    Route::get('/get_karyawan_by_id/{id}', [AdminController::class, 'get_karyawan_id']);
     
     Route::get('/role', [AdminController::class, 'role']);
     Route::post('/tambah_role', [AdminController::class, 'tambah_role']);

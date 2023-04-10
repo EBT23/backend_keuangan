@@ -17,6 +17,8 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    use HasFactory;
+    protected $table = 'users';
     protected $fillable = [
         'name',
         'email',
@@ -27,6 +29,9 @@ class User extends Authenticatable
         'no_rek',
         'role_id',
         'posisi_id',
+        'status',
+        'domisili',
+        'no_tlp',
     ];
 
     /**
